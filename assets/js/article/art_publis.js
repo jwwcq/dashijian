@@ -90,7 +90,8 @@ const publishArticle = fd => {
             const { status, message } = res
             layer.msg(message)
             if (status !== 0) return
-            // location.href=
+            location.href = '/article/atr_list.html'
+            
         }
     })
 }
