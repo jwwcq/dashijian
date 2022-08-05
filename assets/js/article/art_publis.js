@@ -59,5 +59,38 @@ $('#saveBtn').click(function () {
 
 $('.layui-form').submit(function (e) {
     e.preventDefault()
-    console.log(1);
+    let fd = new FormData($(this)[0])
+    fd.append('state', art_state)
+
+    // 4. 将封面裁剪过后的图片，输出为一个文件对象
+    $image
+        .cropper('getCroppedCanvas', {
+            // 创建一个 Canvas 画布
+            width: 400,
+            height: 280
+        })
+        .toBlob(function (blob) {
+            // 将 Canvas 画布上的内容，转化为文件对象
+            // 得到文件对象后，进行后续的操作
+            // 5. 将文件对象，存储到 fd 中
+            fd.append('cover_img', blob)
+            // 6. 发起 ajax 数据请求
+            publishArticle(fd)
+        })
 })
+
+const publishArticle = fd => {
+    $.ajax({
+        type: 'POST',
+        url: '/my/article/add',
+        data: fd,
+        contentType: false,
+        processData: false,
+        success: res => {
+            const { status, message } = res
+            layer.msg(message)
+            if (status !== 0) return
+            // location.href=
+        }
+    })
+}
